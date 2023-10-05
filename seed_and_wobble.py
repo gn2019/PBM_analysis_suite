@@ -18,6 +18,7 @@
 ### M. Berger 05/02/07 (adapted from A. Philippakis)
 ###   Modified 04/04/08
 ##################################################################
+import os
 import argparse
 
 from seed_and_wobble_modules import *
@@ -38,8 +39,8 @@ def parse_args():
     # Add the command-line arguments
     parser.add_argument("intensity_file", type=str, help="PBM data file (sorted by intensities)")
     parser.add_argument("order", type=int, help="Width of k-mers to inspect")
-    parser.add_argument("seed_pattern_file", type=str, help="List of candidate seed patterns (e.g., 11111.111)")
-    parser.add_argument("total_pattern_file", type=str, help="List of all covered gapped patterns (e.g., 111..11.1.11)")
+    parser.add_argument("seed_pattern_file", type=str, help="List of candidate seed patterns (e.g., 11111.111) (or number of gaps, default=2)")
+    parser.add_argument("total_pattern_file", type=str, help="List of all covered gapped patterns (e.g., 111..11.1.11) (or number of gaps, default=8)")
     parser.add_argument("output_prefix", type=str, help="Output file prefix")
 
     # Parse the command-line arguments
@@ -47,19 +48,30 @@ def parse_args():
     return args
 
 
+def generate_patterns(number_of_gaps, order):
+    assert number_of_gaps.isnumeric(), "number of gaps must be a positive number"
+    number_of_gaps = int(number_of_gaps)
+    patterns = []
+    for i in range(int('1' * order, 2), 2 ** (order + number_of_gaps), 2):
+        pattern = bin(i)[2:]
+        if pattern.count("1") == order:
+            patterns.append(pattern.replace("0", "."))
+    return patterns
+
+
 def read_patterns(patterns_file, order):
     """
     Read in list of gapped patterns to consider for seeds
     """
-    seed_patterns = []
-    with open(patterns_file, "r") as f:
-        for line in f:
-            text = line.strip()
-            seed_patterns.append(text)
-            if len(text.replace('.', '')) != order:
-                raise ValueError(
-                    f"Number of positions in seed {text} in {patterns_file} does not agree with order = {order}")
-    return seed_patterns
+    if os.path.exists(patterns_file):
+        seed_patterns = list(map(str.strip, open(patterns_file, "r")))
+        if any(lambda x: len(x.replace('.', '')) != order, seed_patterns):
+            raise ValueError(
+                    f"Number of positions in seed in {patterns_file} does not agree with order = {order}")
+        return seed_patterns
+    else:
+        print(f"{patterns_file} doesn't exists, try to read as number of gaps")
+        return generate_patterns(patterns_file, order)
 
 
 def read_intensity(intensity_file):
@@ -76,10 +88,22 @@ def read_intensity(intensity_file):
     return data_matrix
 
 
+def remove_duplicates(seed_patterns):
+    """
+    Remove duplicate seeds from list of seeds, reversed words are duplicates
+    """
+    unique_patterns = []
+    for pattern in seed_patterns:
+        if pattern not in unique_patterns and pattern[::-1] not in unique_patterns:
+            unique_patterns.append(pattern)
+    return unique_patterns
+
+
 def seed_and_wobble(data_matrix, order, seed_patterns, output_prefix):
     """
     Calculate median intensity and enrichment score and Z score for each 8-mer
     """
+    seed_patterns = remove_duplicates(seed_patterns)
 
     number_spots_array = len(data_matrix)  # number of spots on array
     tally = 0
