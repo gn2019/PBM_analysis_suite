@@ -66,10 +66,12 @@ from analyze_agilent import cy3_regression, alexa488_normalize, median_neighborh
 ############################################################
 
 DIM_TO_ARRAY_TYPE = {
-    (170, 266): "4x44k",
     (164, 96): "8x15k",
+    (170, 266): "4x44k",
+    (320, 150): "1x48k",
     (328, 192): "8x60k",
     (340, 532): "4x180k",
+    (796, 528): "2x400k",
 }
 ARRAY_TYPE_TO_DIM = {v: k for k, v in DIM_TO_ARRAY_TYPE.items()}
 
