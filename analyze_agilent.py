@@ -9,18 +9,28 @@ ID, SEQ, CY3, CY3_FLAGS, ALEXA, ALEXA_FLAGS = range(1, 7)
 
 
 def _get_margins(array_type, func_name):
-    if array_type == "4x44k":
-        return 20, 245, 150, 416
-    if array_type == "8x15k":
-        return 10, 86, 154, 250
+    array_type_to_margins = {
+        "8x15k": (10, 86, 154, 250),
+        "4x44k": (20, 245, 150, 416),
+        "8x60k": (20, 172, 308, 500),
+        "4x180k": (20, 512, 320, 852),
+        "2x400k": (10, 518, 786, 1314),
+    }
+    if array_type in array_type_to_margins:
+        return array_type_to_margins[array_type]
     raise ValueError(f"Array type {array_type} is not supported for {func_name}")
 
 
 def _get_top_row_col(array_type, func_name):
-    if array_type == "4x44k":
-        return 170, 266
-    if array_type == "8x15k":
-        return 164, 96
+    array_type_to_dim = {
+        "8x15k": (164, 96),
+        "4x44k": (170, 266),
+        "8x60k": (328, 192),
+        "4x180k": (340, 532),
+        "2x400k": (796, 528),
+    }
+    if array_type in array_type_to_dim:
+        return array_type_to_dim[array_type]
     raise ValueError(f"Array type {array_type} is not supported for {func_name}")
 
 
