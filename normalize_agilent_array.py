@@ -68,7 +68,6 @@ from analyze_agilent import cy3_regression, alexa488_normalize, median_neighborh
 DIM_TO_ARRAY_TYPE = {
     (164, 96): "8x15k",
     (170, 266): "4x44k",
-    (320, 150): "1x48k",
     (328, 192): "8x60k",
     (340, 532): "4x180k",
     (796, 528): "2x400k",
@@ -292,7 +291,8 @@ def parse_args():
     Otherwise, should have a column labeled 'F1 Median - B1'.
     **If this file is not included, only spatial detrending (not Cy3 normalization) will be performed.''')
     parser.add_argument('-s', required=True, dest='sequence_file', help='''Text file containing probe sequences and coordinates for the corresponding array design.
-    Contains five columns (with header): Column / Row / Probe Name / Probe ID / Sequence''')
+    Contains five columns (with header): Column / Row / Probe Name / Probe ID / Sequence
+    ** iF YOU DONT FIND IT, CREATE IT USING THE GAL FILE AND THE SequenceList FILE.''')
     parser.add_argument('-o', required=True, dest='output_prefix', help='''Prefix for output filenames.
     If priting files to a subdirectory, the subdirectory must already exist''')
     parser.add_argument('--cy3_gp', type=int, default=1, help='Cy3 wavelength, relevant to column names (default = 1).')

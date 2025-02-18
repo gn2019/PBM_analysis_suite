@@ -37,10 +37,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Seed and Wobble Script")
 
     # Add the command-line arguments
-    parser.add_argument("intensity_file", type=str, help="PBM data file (sorted by intensities)")
-    parser.add_argument("order", type=int, help="Width of k-mers to inspect")
-    parser.add_argument("seed_pattern_file", type=str, help="List of candidate seed patterns (e.g., 11111.111) (or number of gaps, default=2)")
-    parser.add_argument("total_pattern_file", type=str, help="List of all covered gapped patterns (e.g., 111..11.1.11) (or number of gaps, default=8)")
+    parser.add_argument("intensity_file", type=str, help="PBM data file (sorted by intensities) | file that ends with '.._Normalized_deBruijn.txt'")
+    parser.add_argument("order", type=int, help="Width of k-mers to inspect | '7' for 8x15k, '8' for 4x44k or 8x60k")
+    parser.add_argument("seed_pattern_file", type=str, help="File List of candidate seed patterns (e.g., 'patterns_7of9.txt') or number of gaps to generate automaticaly, default=2")
+    parser.add_argument("total_pattern_file", type=str, help="File List of all covered gapped patterns (e.g., 'patterns_8x15k_all_7mer.txt') or number of gaps to generate automaticaly, default=8 (for 7-mers put 6)")
     parser.add_argument("output_prefix", type=str, help="Output file prefix")
 
     # Parse the command-line arguments

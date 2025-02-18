@@ -21,6 +21,7 @@ def _get_margins(array_type, func_name):
     raise ValueError(f"Array type {array_type} is not supported for {func_name}")
 
 
+
 def _get_top_row_col(array_type, func_name):
     array_type_to_dim = {
         "8x15k": (164, 96),
